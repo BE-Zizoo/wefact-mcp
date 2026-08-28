@@ -1,6 +1,6 @@
 [project]
 name = "wefact-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "Local MCP server for the WeFact invoicing API (v2)"
 readme = "README.md"
 authors = [{ name = "Stefan Devroey" }]
