@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.1 — 2026-10-16
+
+- Pin `mcp>=1.10,<2`: the MCP Python SDK 2.x renamed FastMCP to MCPServer and broke the 1.x API, so fresh installs failed with `ModuleNotFoundError: No module named 'mcp.server.fastmcp'`. Existing installs: run `pip install "mcp<2"` inside the venv, or re-run `pip install -e ".[dev]"` after `git pull`.
+- README: install and client-config instructions split into separate Windows (PowerShell), cmd.exe and macOS/Linux blocks — the old single block mixed `source`/`cp` with PowerShell.
+
 ## v1.0.0 — 2026-08-28
 
 First public release.

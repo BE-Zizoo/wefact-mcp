@@ -1,6 +1,6 @@
 [project]
 name = "wefact-mcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "Local MCP server for the WeFact invoicing API (v2)"
 readme = "README.md"
 authors = [{ name = "Stefan Devroey" }]
@@ -8,7 +8,7 @@ urls = { Repository = "https://github.com/BE-Zizoo/wefact-mcp" }
 requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
-    "mcp>=1.10",
+    "mcp>=1.10,<2",
     "httpx>=0.27",
     "python-dotenv>=1.0",
 ]
