@@ -1,7 +1,8 @@
 name: Release
 
 # Publishes a GitHub release whenever the version in pyproject.toml has no
-# tag yet. Release notes come from .github/release-notes/v<version>.md
+# tag yet, with the Claude Desktop extension (wefact-mcp.mcpb) attached.
+# Release notes come from .github/release-notes/v<version>.md
 # (falls back to auto-generated notes).
 
 on:
@@ -18,7 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: version
-        run: echo "tag=v$(grep -m1 '^version' pyproject.toml | cut -d'"' -f2)" >> "$GITHUB_OUTPUT"
+        run: echo "tag=v$(grep -m1 '^version' pyproject.toml | cut -d'\"' -f2)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build Claude Desktop extension
+        run: python packaging/build_mcpb.py dist/wefact-mcp.mcpb
       - name: Create release if tag is new
         env:
           GH_TOKEN: ${{ github.token }}
@@ -29,7 +35,7 @@ jobs:
           fi
           NOTES=".github/release-notes/$TAG.md"
           if [ -f "$NOTES" ]; then
-            gh release create "$TAG" --title "$TAG" --notes-file "$NOTES" --target "$GITHUB_SHA"
+            gh release create "$TAG" dist/wefact-mcp.mcpb --title "$TAG" --notes-file "$NOTES" --target "$GITHUB_SHA"
           else
-            gh release create "$TAG" --title "$TAG" --generate-notes --target "$GITHUB_SHA"
+            gh release create "$TAG" dist/wefact-mcp.mcpb --title "$TAG" --generate-notes --target "$GITHUB_SHA"
           fi

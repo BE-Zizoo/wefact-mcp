@@ -1,0 +1,35 @@
+{
+  "manifest_version": "0.2",
+  "name": "wefact-mcp",
+  "display_name": "WeFact",
+  "version": "1.0.2",
+  "description": "Beheer je WeFact-administratie in gewone taal: facturen, klanten, abonnementen, producten en inkoopfacturen.",
+  "long_description": "Lokale MCP-server voor de WeFact API v2. 18 tools: debiteuren, facturen (concept, versturen, crediteren, betaald markeren), producten, abonnementen, inkoopfacturen, whoami en een generieke wefact_request voor elk ander endpoint. Je API-sleutel blijft op je eigen machine en gaat alleen naar api.mijnwefact.nl.",
+  "author": { "name": "Stefan Devroey", "url": "https://github.com/BE-Zizoo" },
+  "repository": { "type": "git", "url": "https://github.com/BE-Zizoo/wefact-mcp" },
+  "homepage": "https://github.com/BE-Zizoo/wefact-mcp",
+  "license": "MIT",
+  "server": {
+    "type": "python",
+    "entry_point": "server/main.py",
+    "mcp_config": {
+      "command": "python",
+      "args": ["${__dirname}/server/main.py"],
+      "env": { "WEFACT_API_KEY": "${user_config.api_key}" }
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "WeFact API-sleutel",
+      "description": "Maak aan in WeFact onder Instellingen > API en whitelist daar je IPv4-adres.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "compatibility": {
+    "platforms": ["win32"],
+    "runtimes": { "python": ">=3.14 <3.15" }
+  },
+  "keywords": ["wefact", "invoicing", "facturatie", "boekhouding"]
+}

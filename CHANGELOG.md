@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.2 — 2026-10-16
+
+- Claude Desktop extension: every release now ships `wefact-mcp.mcpb` — install via double-click or Settings → Extensions, enter your API key in Claude's own settings UI. Windows + Python 3.14; all dependencies bundled, no venv or JSON config needed.
+- New `packaging/build_mcpb.py` builds the bundle (version and dependencies read from `pyproject.toml`); the release workflow builds and attaches it automatically.
+- README and INSTALL.md document the extension route.
+
 ## v1.0.1 — 2026-10-16
 
 - Pin `mcp>=1.10,<2`: the MCP Python SDK 2.x renamed FastMCP to MCPServer and broke the 1.x API, so fresh installs failed with `ModuleNotFoundError: No module named 'mcp.server.fastmcp'`. Existing installs: run `pip install "mcp<2"` inside the venv, or re-run `pip install -e ".[dev]"` after `git pull`.
