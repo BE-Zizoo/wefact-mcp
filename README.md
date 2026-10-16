@@ -81,19 +81,43 @@ Every `list_*` tool takes `limit` / `offset` (default 100 / 0) and
 
 ## Install
 
-Python 3.10+.
+Requires Python 3.10+ on Windows, macOS or Linux. Pick the block for your
+platform — the commands differ.
+
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/BE-Zizoo/wefact-mcp.git
+cd wefact-mcp
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+copy .env.example .env
+```
+
+If activation fails with an *execution policy* error, run this once and retry:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Using cmd.exe instead of PowerShell? Activate with `.venv\Scripts\activate.bat`.
+
+### macOS / Linux
 
 ```bash
 git clone https://github.com/BE-Zizoo/wefact-mcp.git
 cd wefact-mcp
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[dev]"
-cp .env.example .env             # Windows: copy .env.example .env
+cp .env.example .env
 ```
 
+### All platforms
+
 Put your key in `.env` (`WEFACT_API_KEY=...`). Create it in WeFact under
-Settings → API and whitelist your IPv4 address on the same page.
+Settings → API and whitelist your IPv4 address on the same page. Then verify:
 
 ```bash
 pytest        # 33 tests, no network needed
@@ -104,7 +128,23 @@ pytest        # 33 tests, no network needed
 ### Claude Desktop
 
 `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or
-`~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
+`~/Library/Application Support/Claude/claude_desktop_config.json` (macOS).
+
+Windows:
+
+```json
+{
+  "mcpServers": {
+    "wefact": {
+      "command": "C:\\path\\to\\wefact-mcp\\.venv\\Scripts\\python.exe",
+      "args": ["-m", "wefact_mcp"],
+      "cwd": "C:\\path\\to\\wefact-mcp"
+    }
+  }
+}
+```
+
+macOS / Linux:
 
 ```json
 {
@@ -118,12 +158,19 @@ pytest        # 33 tests, no network needed
 }
 ```
 
-On Windows use `"C:\\path\\to\\wefact-mcp\\.venv\\Scripts\\python.exe"`.
 `cwd` is what lets the server find your `.env`; alternatively drop `.env` and
 pass `"env": { "WEFACT_API_KEY": "..." }` instead. Fully quit and restart
 Claude Desktop, then ask: *"Use the wefact `whoami` tool."*
 
 ### Claude Code
+
+Windows (PowerShell):
+
+```powershell
+claude mcp add wefact -e WEFACT_API_KEY=your-key -- C:\path\to\wefact-mcp\.venv\Scripts\python.exe -m wefact_mcp
+```
+
+macOS / Linux:
 
 ```bash
 claude mcp add wefact -e WEFACT_API_KEY=your-key -- /path/to/wefact-mcp/.venv/bin/python -m wefact_mcp
