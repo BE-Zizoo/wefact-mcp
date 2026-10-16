@@ -15,6 +15,7 @@ administration through plain language.
 > "Mark invoice 2026010001 as paid today, bank transfer."
 
 Runs on your own machine over stdio. The API key lives in a local `.env`
+(or, with the Claude Desktop extension, in Claude's own secure settings)
 and only ever travels to `api.mijnwefact.nl`. No telemetry, no proxy.
 
 **Nederlandstalige installatiehandleiding: [INSTALL.md](INSTALL.md).**
@@ -81,10 +82,26 @@ Every `list_*` tool takes `limit` / `offset` (default 100 / 0) and
 
 ## Install
 
+### Option A — Claude Desktop extension (easiest)
+
+Download **`wefact-mcp.mcpb`** from the
+[latest release](https://github.com/BE-Zizoo/wefact-mcp/releases/latest) and
+double-click it, or install it via Claude Desktop → **Settings → Extensions →
+Advanced settings → Install Extension…**. Claude asks for your WeFact API key
+during setup and stores it securely — no venv, no `pip install`, no JSON
+config; all Python dependencies are bundled.
+
+Requirements: **Windows with Python 3.14** on PATH (Claude Desktop bundles
+Node.js, not Python). Other platforms or Python versions: build your own
+bundle with `python packaging/build_mcpb.py` after adjusting `PLATFORM` /
+`PYTHON_VERSION` at the top of that script, or install manually below.
+
+### Option B — manual install
+
 Requires Python 3.10+ on Windows, macOS or Linux. Pick the block for your
 platform — the commands differ.
 
-### Windows (PowerShell)
+#### Windows (PowerShell)
 
 ```powershell
 git clone https://github.com/BE-Zizoo/wefact-mcp.git
@@ -103,7 +120,7 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 Using cmd.exe instead of PowerShell? Activate with `.venv\Scripts\activate.bat`.
 
-### macOS / Linux
+#### macOS / Linux
 
 ```bash
 git clone https://github.com/BE-Zizoo/wefact-mcp.git
@@ -114,7 +131,7 @@ pip install -e ".[dev]"
 cp .env.example .env
 ```
 
-### All platforms
+#### All platforms
 
 Put your key in `.env` (`WEFACT_API_KEY=...`). Create it in WeFact under
 Settings → API and whitelist your IPv4 address on the same page. Then verify:
@@ -124,6 +141,9 @@ pytest        # 33 tests, no network needed
 ```
 
 ## Configure your MCP client
+
+With the Claude Desktop extension (Option A) this section is not needed —
+the extension registers itself. For a manual install:
 
 ### Claude Desktop
 
@@ -160,7 +180,8 @@ macOS / Linux:
 
 `cwd` is what lets the server find your `.env`; alternatively drop `.env` and
 pass `"env": { "WEFACT_API_KEY": "..." }` instead. Fully quit and restart
-Claude Desktop, then ask: *"Use the wefact `whoami` tool."*
+Claude Desktop, then ask: *"Use the wefact `whoami` tool."* Don't combine the
+extension and a config entry — you'd get every tool twice.
 
 ### Claude Code
 
@@ -199,6 +220,7 @@ Same `command`, `args` and `cwd`.
 wefact_mcp/client.py            HTTP client: form encoding, retry/backoff, pagination, errors
 wefact_mcp/server.py            FastMCP tool definitions
 tests/                          33 tests against a fake WeFact (httpx.MockTransport)
+packaging/                      Claude Desktop extension (.mcpb) manifest + build script
 docs/wefact-api-reference.md    condensed WeFact v2 API reference
 INSTALL.md                      Dutch step-by-step install guide
 ```
@@ -214,6 +236,10 @@ Adding a tool: write a function in `server.py` decorated with `@tool`, use
 WeFact's field names as parameter names, return the raw API response. Raise
 `WeFactError` for local validation; the decorator turns it into the
 structured error dict.
+
+Releasing: bump `version` in `pyproject.toml`, add
+`.github/release-notes/v<version>.md`, push — the release workflow tags it,
+builds the `.mcpb` and attaches it.
 
 ## Limitations
 

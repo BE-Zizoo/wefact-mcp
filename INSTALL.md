@@ -1,7 +1,20 @@
 # Handleiding: wefact-mcp installeren (Windows)
 
 Stappen voor Windows met Claude Desktop. macOS/Linux staat onderaan.
-Reken op een kwartier.
+Reken op een kwartier — of twee minuten met de kant-en-klare extensie hieronder.
+
+## Snelste route: kant-en-klare extensie (aanbevolen)
+
+Heb je **Python 3.14 op Windows** (check: stap 1 hieronder)? Download dan
+`wefact-mcp.mcpb` van de [laatste release](https://github.com/BE-Zizoo/wefact-mcp/releases/latest)
+en dubbelklik erop, of installeer via Claude Desktop → **Settings →
+Extensions → Advanced settings → Install Extension…**. Claude vraagt bij de
+installatie om je WeFact API-sleutel (aanmaken en IP-whitelist: zie stap 4)
+en bewaart die zelf veilig. Alle Python-libraries zitten in de bundel —
+stappen 2, 3, 5 en 6 vervallen volledig. Test daarna zoals in stap 7.
+
+De rest van deze handleiding is de handmatige route (werkt op elke
+Python-versie vanaf 3.10 en op macOS/Linux).
 
 ## 1. Python controleren
 
@@ -116,6 +129,9 @@ Let op de dubbele backslashes `\\` in JSON. `cwd` is nodig zodat de server je
 `"env": { "WEFACT_API_KEY": "..." }` in dit blok — dan staat de key in de
 config van Claude in plaats van in `.env`. Kies één van beide.)
 
+Gebruik je de extensie uit de snelste route? Zet dan géén `wefact`-blok in
+deze config — anders draait de server dubbel en zie je elke tool twee keer.
+
 3. Sla op en **sluit Claude Desktop volledig af** (ook via het systeemvak
    rechtsonder → Quit) en start het opnieuw.
 
@@ -143,11 +159,8 @@ Bij fouten staat de oorzaak in het antwoord (`message` en `errors`):
 Claude Code:
 
 ```powershell
-claude mcp add wefact -- C:\Users\stefa\wefact-mcp\.venv\Scripts\python.exe -m wefact_mcp
+claude mcp add wefact -e WEFACT_API_KEY=jouw-key -- C:\Users\stefa\wefact-mcp\.venv\Scripts\python.exe -m wefact_mcp
 ```
-
-(Claude Code start de server niet vanuit de projectmap, dus geef hier de key mee
-met `-e WEFACT_API_KEY=...` of zet `cwd` handmatig in `.claude.json`.)
 
 Cursor / andere MCP-clients: zelfde `command`, `args` en `cwd` als hierboven.
 
@@ -167,6 +180,10 @@ Config: `~/Library/Application Support/Claude/claude_desktop_config.json` met
 
 ## Updaten
 
-`git pull` in de map (of nieuwe zip over de bestaande map uitpakken; `.env`
-blijft staan), dan in PowerShell in die map: `.venv\Scripts\activate` en
-`pip install -e ".[dev]"`, Claude Desktop herstarten.
+Extensie: download de nieuwe `.mcpb` van de laatste release en installeer
+hem opnieuw (instellingen zoals je API-sleutel blijven bewaard).
+
+Handmatige installatie: `git pull` in de map (of nieuwe zip over de bestaande
+map uitpakken; `.env` blijft staan), dan in PowerShell in die map:
+`.venv\Scripts\activate` en `pip install -e ".[dev]"`, Claude Desktop
+herstarten.
